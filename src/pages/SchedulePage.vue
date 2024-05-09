@@ -12,26 +12,42 @@
         <th class="text-left">Away Team</th>
       </thead>
       <tbody>
-        <tr class="h-20">
+        <tr
+          class="h-20"
+          v-for="match in leagueService.matches"
+          :key="match.stadium"
+        >
           <td>5.5.2020<br />11:50</td>
-          <td>Marcana</td>
+          <td>{{ match.stadium }}</td>
           <td class="inline-flex w-full items-center justify-end h-20">
-            <span class="mr-4">Brazil</span>
+            <span class="mr-4">{{ match.homeTeam }}</span>
             <img
-              src="https://flagsapi.codeaid.io/Brazil.png"
+              :src="`https://flagsapi.codeaid.io/${match.homeTeam}.png`"
               class="w-12 h-10"
             />
           </td>
-          <td class="text-center">1 : 0</td>
+          <td class="text-center">
+            {{ match.homeTeamScore }} : {{ match.awayTeamScore }}
+          </td>
           <td class="inline-flex items-center h-20">
             <img
-              src="https://flagsapi.codeaid.io/Serbia.png"
+              :src="`https://flagsapi.codeaid.io/${match.awayTeam}.png`"
               class="w-12 h-10 mr-4"
             />
-            <span>Serbia</span>
+            <span>{{ match.awayTeam }}</span>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 </template>
+
+<script setup>
+import { onMounted, ref } from "vue";
+import LeagueService from "@/services/LeagueService"; // Adjust the path as necessary
+
+const leagueService = ref(new LeagueService());
+onMounted(async () => {
+  await leagueService.value.fetchData();
+});
+</script>
