@@ -49,5 +49,6 @@ import LeagueService from "@/services/LeagueService"; // Adjust the path as nece
 const leagueService = ref(new LeagueService());
 onMounted(async () => {
   await leagueService.value.fetchData();
+  console.log(leagueService.value.getLeaderboard())
 });
 </script>

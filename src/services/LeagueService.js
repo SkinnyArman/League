@@ -11,6 +11,7 @@
 class LeagueService {
   constructor() {
     this.matches = [];
+    this.standings = [];
   }
   /**
    * Sets the match schedule.
@@ -47,7 +48,9 @@ class LeagueService {
    *
    * @returns {Array} List of matches.
    */
-  getMatches() {}
+  getMatches() {
+    return this.matches;
+  }
 
   /**
    * Returns the leaderboard in a form of a list of JSON objecs.
@@ -64,7 +67,116 @@ class LeagueService {
    *
    * @returns {Array} List of teams representing the leaderboard.
    */
-  getLeaderboard() {}
+  getLeaderboard() {
+    this._aggregateResults();
+    return this._sortStandings();
+  }
+  _aggregateResults() {
+    for (const match of this.matches) {
+      this._initializeTeamStanding(match.homeTeam);
+      this._initializeTeamStanding(match.awayTeam);
+      if (match.matchPlayed) {
+        this._updateMatchResults(match);
+      }
+    }
+  }
+  _initializeTeamStanding(teamName) {
+    if (this.standings.map((team) => team.teamName).includes(teamName)) {
+      return;
+    }
+    const teamStanding = {
+      teamName: teamName,
+      matchesPlayed: 0,
+      goalsFor: 0,
+      goalsAgainst: 0,
+      points: 0,
+      headToHead: {},
+    };
+    this.standings.push(teamStanding);
+  }
+
+  _updateMatchesPlayed(homeTeam, awayTeam) {
+    homeTeam.matchesPlayed++;
+    awayTeam.matchesPlayed++;
+  }
+
+  _updateTeamGoals(homeTeam, awayTeam, match) {
+    homeTeam.goalsFor += match.homeTeamScore;
+    homeTeam.goalsAgainst += match.awayTeamScore;
+
+    awayTeam.goalsFor += match.awayTeamScore;
+    awayTeam.goalsAgainst += match.homeTeamScore;
+  }
+
+  _updateHeadToHead(homeTeam, awayTeam, match) {
+    homeTeam.headToHead[awayTeam.teamName] =
+      homeTeam.headToHead[awayTeam.teamName] || 0;
+    awayTeam.headToHead[homeTeam.teamName] =
+      awayTeam.headToHead[homeTeam.teamName] || 0;
+
+    if (match.homeTeamScore > match.awayTeamScore) {
+      homeTeam.headToHead[awayTeam.teamName] += 3;
+    } else if (match.homeTeamScore < match.awayTeamScore) {
+      awayTeam.headToHead[homeTeam.teamName] += 3;
+    } else {
+      homeTeam.headToHead[awayTeam.teamName] += 1;
+      awayTeam.headToHead[homeTeam.teamName] += 1;
+    }
+  }
+
+  _updateTeamPoints(homeTeam, awayTeam, match) {
+    if (match.homeTeamScore > match.awayTeamScore) {
+      homeTeam.points += 3;
+    } else if (match.homeTeamScore < match.awayTeamScore) {
+      awayTeam.points += 3;
+    } else {
+      homeTeam.points += 1;
+      awayTeam += 1;
+    }
+  }
+
+  _sortStandings() {
+    return this.standings
+      .sort((a, b) => {
+        // Primary sorting by points
+        const pointDifference = b.points - a.points;
+        if (pointDifference !== 0) return pointDifference;
+
+        // Secondary tiebreaker: head-to-head points
+        const aToBHeadToHead = a.headToHead[b.teamName] || 0;
+        const bToAHeadToHead = b.headToHead[a.teamName] || 0;
+        const headToHeadDifference = bToAHeadToHead - aToBHeadToHead;
+        if (headToHeadDifference !== 0) return headToHeadDifference;
+
+        // Tertiary tiebreakers could be goal difference or alphabetical order
+        const goalDifference =
+          b.goalsFor - b.goalsAgainst - (a.goalsFor - a.goalsAgainst);
+        if (goalDifference !== 0) return goalDifference;
+
+        return a.teamName.localeCompare(b.teamName);
+      })
+      .map((team) => ({
+        // Return only the required fields
+        teamName: team.teamName,
+        matchesPlayed: team.matchesPlayed,
+        goalsFor: team.goalsFor,
+        goalsAgainst: team.goalsAgainst,
+        points: team.points,
+      }));
+  }
+  _updateMatchResults(match) {
+    const homeTeam = this.standings.find(
+      (team) => team.teamName === match.homeTeam
+    );
+    const awayTeam = this.standings.find(
+      (team) => team.teamName === match.awayTeam
+    );
+
+    this._updateMatchesPlayed(homeTeam, awayTeam);
+    this._updateTeamGoals(homeTeam, awayTeam, match);
+    this._updateTeamPoints(homeTeam, awayTeam, match);
+    this._updateHeadToHead(homeTeam, awayTeam, match);
+  }
 
   /**
    * Asynchronic function to fetch the data from the server and set the matches.
@@ -74,7 +186,9 @@ class LeagueService {
     //this.setMatches(matches);
     try {
       // Fetch the access token
-      const tokenResponse = await fetch("http://localhost:3001/api/v1/getAccessToken");
+      const tokenResponse = await fetch(
+        "http://localhost:3001/api/v1/getAccessToken"
+      );
       if (!tokenResponse.ok) {
         throw new Error(
           `Failed to fetch access token: ${tokenResponse.status}`
@@ -84,11 +198,14 @@ class LeagueService {
       const accessToken = tokenData.access_token;
 
       // Use the access token to fetch the matches
-      const matchesResponse = await fetch("http://localhost:3001/api/v1/getAllMatches", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const matchesResponse = await fetch(
+        "http://localhost:3001/api/v1/getAllMatches",
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
       if (!matchesResponse.ok) {
         throw new Error(`Failed to fetch matches: ${matchesResponse.status}`);
       }
