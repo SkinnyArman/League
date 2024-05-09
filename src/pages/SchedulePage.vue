@@ -14,7 +14,7 @@
       <tbody>
         <tr
           class="h-20"
-          v-for="match in leagueService.matches"
+          v-for="match in leagueService.getMatches()"
           :key="match.stadium"
         >
           <td>5.5.2020<br />11:50</td>
@@ -43,12 +43,8 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, inject } from "vue";
 import LeagueService from "@/services/LeagueService"; // Adjust the path as necessary
 
-const leagueService = ref(new LeagueService());
-onMounted(async () => {
-  await leagueService.value.fetchData();
-  console.log(leagueService.value.getLeaderboard())
-});
+const leagueService = inject('leagueService');
 </script>
