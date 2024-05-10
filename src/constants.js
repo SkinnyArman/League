@@ -1,0 +1,1 @@
+export const FLAG_URL = 'https://flagsapi.codeaid.io/'
