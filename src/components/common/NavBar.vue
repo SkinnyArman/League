@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-blue flex items-center h-16 px-12 justify-between">
+  <div class="bg-blue flex items-center h-15 px-12 justify-between">
     <img src="images/logo.svg" />
     <div class="flex text-h1">
       <RouterLink

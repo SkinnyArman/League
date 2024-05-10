@@ -12,6 +12,9 @@ module.exports = {
         primary: "#182C62",
       },
     },
+    fontFamily: {
+      body: ['"Open Sans"', "sans-serif"],
+    },
     fontSize: {
       caption: "12px",
       body2: "14px",
@@ -22,6 +25,7 @@ module.exports = {
       height: {
         17.5: "4.375rem",
         9.25: "2.313rem",
+        15: "3.75rem",
       },
       width: {
         13.25: "3.313rem",

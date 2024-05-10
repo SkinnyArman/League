@@ -4,9 +4,9 @@
       League Schedule
     </h1>
     <table class="w-full">
-      <thead class="bg-grey-main h-10">
-        <th class="text-left">Date/Time</th>
-        <th class="text-left">Stadium</th>
+      <thead class="bg-grey-main h-10 text-text-main">
+        <th class="text-left pl-6">Date/Time</th>
+        <th class="text-left hidden md:table-cell">Stadium</th>
         <th class="text-right">Home Team</th>
         <th class="text-"></th>
         <th class="text-left">Away Team</th>
@@ -14,27 +14,26 @@
       <tbody>
         <tr
           class="h-20"
-          v-for="match in leagueService.getMatches()"
+          v-for="(match, index) in leagueService.getMatches()"
           :key="match.stadium"
+          :class="{ 'bg-grey-light': isOdd(index) }"
         >
-          <td>5.5.2020<br />11:50</td>
-          <td>{{ match.stadium }}</td>
-          <td class="inline-flex w-full items-center justify-end h-20">
-            <span class="mr-4">{{ match.homeTeam }}</span>
-            <img
-              :src="`https://flagsapi.codeaid.io/${match.homeTeam}.png`"
-              class="w-12 h-10"
-            />
+          <td class="pl-6">
+            {{ formatDate(match.matchDate) }}<br />{{
+              formatDateByHour(match.matchDate)
+            }}
           </td>
-          <td class="text-center">
+          <td class="hidden md:table-cell">{{ match.stadium }}</td>
+          <td class="inline-flex w-full items-center justify-end h-20">
+            <span class="mr-4 font-bold">{{ match.homeTeam }}</span>
+            <country-flag :country="match.homeTeam"></country-flag>
+          </td>
+          <td class="text-center font-bold">
             {{ match.homeTeamScore }} : {{ match.awayTeamScore }}
           </td>
           <td class="inline-flex items-center h-20">
-            <img
-              :src="`https://flagsapi.codeaid.io/${match.awayTeam}.png`"
-              class="w-12 h-10 mr-4"
-            />
-            <span>{{ match.awayTeam }}</span>
+            <country-flag :country="match.awayTeam" class="mr-4"></country-flag>
+            <span class="font-bold">{{ match.awayTeam }}</span>
           </td>
         </tr>
       </tbody>
@@ -43,8 +42,10 @@
 </template>
 
 <script setup>
-import { onMounted, ref, inject } from "vue";
-import LeagueService from "@/services/LeagueService"; // Adjust the path as necessary
+import { inject } from "vue";
+import { formatDate, formatDateByHour } from "../helpers";
+import CountryFlag from "../components/common/CountryFlag.vue";
 
-const leagueService = inject('leagueService');
+const leagueService = inject("leagueService");
+const isOdd = (number) => number % 2 == 1;
 </script>
