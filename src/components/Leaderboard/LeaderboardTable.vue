@@ -1,8 +1,8 @@
 <template>
   <table>
-    <thead class="bg-grey-main h-10">
-      <th v-for="header in tableInfo" :key="header.value" :class="header.class">
-        {{ header.header }}
+    <thead class="bg-grey-main text-text-main h-10">
+      <th v-for="row in tableInfo" :key="row.value" :class="row.headerClass">
+        {{ row.header }}
       </th>
     </thead>
     <tbody>
@@ -14,7 +14,7 @@
         <td
           v-for="column in tableInfo"
           :key="column.value"
-          :class="column.class"
+          :class="column.columnClass"
         >
           <slot :name="column.value" :team="team">
             {{ team[column.value] }}

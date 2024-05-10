@@ -18,6 +18,18 @@ module.exports = {
       body1: "16px",
       h1: "24px",
     },
+    extend: {
+      height: {
+        17.5: "4.375rem",
+        9.25: "2.313rem",
+      },
+      width: {
+        13.25: "3.313rem",
+      },
+      spacing: {
+        15: "3.75rem",
+      },
+    },
   },
   variants: {
     extend: {},

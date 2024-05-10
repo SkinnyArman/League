@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-h1 text-text-main font-bold text-center mb-5">
+    <h1 class="text-h1 text-text-primary font-bold text-center mb-5">
       League Schedule
     </h1>
     <table class="w-full">

@@ -1,5 +1,5 @@
 <template>
-  <img :src="countryFlagURL(props.country)" class="w-12 h-10" />
+  <img :src="countryFlagURL(props.country)" class="w-13.25 h-9.25" />
 </template>
 
 <script setup>
