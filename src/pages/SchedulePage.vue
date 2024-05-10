@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-12 mb-10">
+  <div>
     <h1 class="text-h1 text-text-main font-bold text-center mb-5">
       League Schedule
     </h1>
