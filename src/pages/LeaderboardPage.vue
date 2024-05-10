@@ -32,7 +32,7 @@ const tableInfo = [
     header: "Team Name",
     value: "teamName",
     headerClass: "text-left pl-6",
-    columnClass: "text-left pl-6"
+    columnClass: "text-left pl-6 font-bold"
   },
   {
     header: "MP",

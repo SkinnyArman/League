@@ -5,7 +5,7 @@
     </h1>
     <table class="w-full">
       <thead class="bg-grey-main h-10 text-text-main">
-        <th class="text-left pl-6">Date/Time</th>
+        <th class="text-left pl-6 hidden md:table-cell">Date/Time</th>
         <th class="text-left hidden md:table-cell">Stadium</th>
         <th class="text-right">Home Team</th>
         <th class="text-"></th>
@@ -13,12 +13,12 @@
       </thead>
       <tbody>
         <tr
-          class="h-20"
+          class="text-text-main h-20"
           v-for="(match, index) in leagueService.getMatches()"
           :key="match.stadium"
           :class="{ 'bg-grey-light': isOdd(index) }"
         >
-          <td class="pl-6">
+          <td class="hidden md:table-cell pl-6">
             {{ formatDate(match.matchDate) }}<br />{{
               formatDateByHour(match.matchDate)
             }}
@@ -28,7 +28,7 @@
             <span class="mr-4 font-bold">{{ match.homeTeam }}</span>
             <country-flag :country="match.homeTeam"></country-flag>
           </td>
-          <td class="text-center font-bold">
+          <td class="text-center font-bold mx-4">
             {{ match.homeTeamScore }} : {{ match.awayTeamScore }}
           </td>
           <td class="inline-flex items-center h-20">

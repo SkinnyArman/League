@@ -9,7 +9,7 @@
       <tr
         v-for="team in props.leaderboard"
         :key="team.id"
-        class="border-grey-main border-b"
+        class="border-grey-main text-text-main border-b"
       >
         <td
           v-for="column in tableInfo"

@@ -1,16 +1,16 @@
 <template>
   <div class="bg-blue flex items-center h-15 px-12 justify-between">
     <img src="images/logo.svg" />
-    <div class="flex text-h1">
+    <div class="flex">
       <RouterLink
-        class="inline-flex items-center text-white mr-10"
+        class="inline-flex items-center text-white mr-10 text-body1"
         :to="RoutesEnum.Schedule"
       >
         <img src="images/schedule.png" class="h-6 mr-1" />
         Schedule
       </RouterLink>
       <RouterLink
-        class="inline-flex items-center text-white mr-10"
+        class="inline-flex items-center text-white text-body1"
         :to="RoutesEnum.Leaderboard"
       >
         <img src="images/leaderboard.png" class="h-6 mr-1" />

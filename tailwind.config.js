@@ -15,6 +15,11 @@ module.exports = {
     fontFamily: {
       body: ['"Open Sans"', "sans-serif"],
     },
+    screens: {
+      sm: "500px",
+      md: "750px",
+      lg: "1000px",
+    },
     fontSize: {
       caption: "12px",
       body2: "14px",
