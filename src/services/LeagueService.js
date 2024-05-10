@@ -1,3 +1,6 @@
+import AuthService from "./AuthService";
+import { BASE_URL, EndpointEnum } from "../constants";
+
 /**
  * A class representing a service that processes the data for match schedule
  * and generates leaderboard.
@@ -118,7 +121,7 @@ class LeagueService {
         const headToHeadDifference = bToAHeadToHead - aToBHeadToHead;
         if (headToHeadDifference !== 0) return headToHeadDifference;
 
-        // Tertiary tiebreakers: goal difference 
+        // Tertiary tiebreakers: goal difference
         const goalDifference =
           b.goalsFor - b.goalsAgainst - (a.goalsFor - a.goalsAgainst);
         if (goalDifference !== 0) return goalDifference;
@@ -152,30 +155,14 @@ class LeagueService {
    */
   async fetchData() {
     try {
-      const tokenResponse = await fetch(
-        "http://localhost:3001/api/v1/getAccessToken"
-      );
-      if (!tokenResponse.ok) {
-        throw new Error(
-          `Failed to fetch access token: ${tokenResponse.status}`
-        );
-      }
-      const tokenData = await tokenResponse.json();
-      const accessToken = tokenData.access_token;
-
-      const matchesResponse = await fetch(
-        "http://localhost:3001/api/v1/getAllMatches",
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      if (!matchesResponse.ok) {
-        throw new Error(`Failed to fetch matches: ${matchesResponse.status}`);
-      }
+      const authService = new AuthService();
+      await authService.fetchAccessToken()
+      const matchesResponse = await fetch(`${BASE_URL}${EndpointEnum.Matches}`, {
+        headers: {
+          Authorization: `Bearer ${authService.getToken()}`,
+        },
+      });
       const result = await matchesResponse.json();
-
       this.setMatches(result.matches);
     } catch (error) {
       console.error("Error fetching matches data:", error);
