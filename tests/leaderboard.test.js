@@ -485,12 +485,11 @@ describe("laderboard", () => {
     const germany = leaderboard.find((team) => team.teamName === "Germany");
     const italy = leaderboard.find((team) => team.teamName === "Italy");
 
-    // expect(leaderboard[0]).toBe(brazil)
-    // expect(leaderboard[1]).toBe(argentina)
-    // expect(brazil.points).toBe(argentina.points)
-    console.log(leaderboard)
-    // expect(leaderboard[2]).toBe(germany)
-    // expect(leaderboard[3]).toBe(italy)
-    // expect(germany.goalsFor - germany.goalsAgainst).toBeGreaterThan(italy.go)
+    expect(leaderboard[0]).toBe(argentina)
+    expect(leaderboard[1]).toBe(brazil)
+    expect(brazil.points).toBe(argentina.points)
+    expect(leaderboard[2]).toBe(germany)
+    expect(leaderboard[3]).toBe(italy)
+    expect(germany.goalsFor - germany.goalsAgainst).toBeGreaterThan(italy.goalsFor - italy.goalsAgainst)
   });
 });
