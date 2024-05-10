@@ -11,7 +11,6 @@
 class LeagueService {
   constructor() {
     this.matches = [];
-    this.standings = [];
   }
   /**
    * Sets the match schedule.
@@ -68,22 +67,27 @@ class LeagueService {
    * @returns {Array} List of teams representing the leaderboard.
    */
   getLeaderboard() {
-    this._aggregateResults();
-    return this._sortStandings();
+    const standingsMap = this._calculateStandings();
+    const standingsArray = [...standingsMap.values()]
+    return this._sortStandings(standingsArray)
   }
-  _aggregateResults() {
+  _calculateStandings() {
+    const standingsMap = new Map();
+
     for (const match of this.matches) {
-      this._initializeTeamStanding(match.homeTeam);
-      this._initializeTeamStanding(match.awayTeam);
+      if (!standingsMap.has(match.homeTeam)) {
+        this._initializeTeamStanding(match.homeTeam, standingsMap);
+      }
+      if (!standingsMap.has(match.awayTeam)) {
+        this._initializeTeamStanding(match.awayTeam, standingsMap);
+      }
       if (match.matchPlayed) {
-        this._updateMatchResults(match);
+        this._updateMatchResults(match, standingsMap);
       }
     }
+    return standingsMap
   }
-  _initializeTeamStanding(teamName) {
-    if (this.standings.map((team) => team.teamName).includes(teamName)) {
-      return;
-    }
+  _initializeTeamStanding(teamName, standingsMap) {
     const teamStanding = {
       teamName: teamName,
       matchesPlayed: 0,
@@ -92,7 +96,7 @@ class LeagueService {
       points: 0,
       headToHead: {},
     };
-    this.standings.push(teamStanding);
+    standingsMap.set(teamName, teamStanding);
   }
 
   _updateMatchesPlayed(homeTeam, awayTeam) {
@@ -101,11 +105,11 @@ class LeagueService {
   }
 
   _updateTeamGoals(homeTeam, awayTeam, match) {
-    homeTeam.goalsFor += match.homeTeamScore;
-    homeTeam.goalsAgainst += match.awayTeamScore;
+    homeTeam.goalsFor += +match.homeTeamScore;
+    homeTeam.goalsAgainst += +match.awayTeamScore;
 
-    awayTeam.goalsFor += match.awayTeamScore;
-    awayTeam.goalsAgainst += match.homeTeamScore;
+    awayTeam.goalsFor += +match.awayTeamScore;
+    awayTeam.goalsAgainst += +match.homeTeamScore;
   }
 
   _updateHeadToHead(homeTeam, awayTeam, match) {
@@ -135,8 +139,8 @@ class LeagueService {
     }
   }
 
-  _sortStandings() {
-    return this.standings
+  _sortStandings(standings) {
+    return standings
       .sort((a, b) => {
         // Primary sorting by points
         const pointDifference = b.points - a.points;
@@ -164,14 +168,9 @@ class LeagueService {
         points: team.points,
       }));
   }
-  _updateMatchResults(match) {
-    const homeTeam = this.standings.find(
-      (team) => team.teamName === match.homeTeam
-    );
-    const awayTeam = this.standings.find(
-      (team) => team.teamName === match.awayTeam
-    );
-
+  _updateMatchResults(match, standingsMap) {
+    const homeTeam = standingsMap.get(match.homeTeam)
+    const awayTeam = standingsMap.get(match.awayTeam)
     this._updateMatchesPlayed(homeTeam, awayTeam);
     this._updateTeamGoals(homeTeam, awayTeam, match);
     this._updateTeamPoints(homeTeam, awayTeam, match);
