@@ -14,28 +14,6 @@ class LeagueService {
   }
   /**
    * Sets the match schedule.
-   * Match schedule will be given in the following form:
-   * [
-   *      {
-   *          matchDate: [TIMESTAMP],
-   *          stadium: [STRING],
-   *          homeTeam: [STRING],
-   *          awayTeam: [STRING],
-   *          matchPlayed: [BOOLEAN],
-   *          homeTeamScore: [INTEGER],
-   *          awayTeamScore: [INTEGER]
-   *      },
-   *      {
-   *          matchDate: [TIMESTAMP],
-   *          stadium: [STRING],
-   *          homeTeam: [STRING],
-   *          awayTeam: [STRING],
-   *          matchPlayed: [BOOLEAN],
-   *          homeTeamScore: [INTEGER],
-   *          awayTeamScore: [INTEGER]
-   *      }
-   * ]
-   *
    * @param {Array} matches List of matches.
    */
   setMatches(matches) {
@@ -44,7 +22,6 @@ class LeagueService {
 
   /**
    * Returns the full list of matches.
-   *
    * @returns {Array} List of matches.
    */
   getMatches() {
@@ -53,17 +30,6 @@ class LeagueService {
 
   /**
    * Returns the leaderboard in a form of a list of JSON objecs.
-   *
-   * [
-   *      {
-   *          teamName: [STRING]',
-   *          matchesPlayed: [INTEGER],
-   *          goalsFor: [INTEGER],
-   *          goalsAgainst: [INTEGER],
-   *          points: [INTEGER]
-   *      },
-   * ]
-   *
    * @returns {Array} List of teams representing the leaderboard.
    */
   getLeaderboard() {
@@ -105,11 +71,11 @@ class LeagueService {
   }
 
   _updateTeamGoals(homeTeam, awayTeam, match) {
-    homeTeam.goalsFor += +match.homeTeamScore;
-    homeTeam.goalsAgainst += +match.awayTeamScore;
+    homeTeam.goalsFor += match.homeTeamScore;
+    homeTeam.goalsAgainst += match.awayTeamScore;
 
-    awayTeam.goalsFor += +match.awayTeamScore;
-    awayTeam.goalsAgainst += +match.homeTeamScore;
+    awayTeam.goalsFor += match.awayTeamScore;
+    awayTeam.goalsAgainst += match.homeTeamScore;
   }
 
   _updateHeadToHead(homeTeam, awayTeam, match) {
@@ -185,10 +151,7 @@ class LeagueService {
    * Asynchronic function to fetch the data from the server and set the matches.
    */
   async fetchData() {
-    //const matches = [] //TODO: replace this with the correct matches.
-    //this.setMatches(matches);
     try {
-      // Fetch the access token
       const tokenResponse = await fetch(
         "http://localhost:3001/api/v1/getAccessToken"
       );
@@ -200,7 +163,6 @@ class LeagueService {
       const tokenData = await tokenResponse.json();
       const accessToken = tokenData.access_token;
 
-      // Use the access token to fetch the matches
       const matchesResponse = await fetch(
         "http://localhost:3001/api/v1/getAllMatches",
         {
