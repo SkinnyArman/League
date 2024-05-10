@@ -68,8 +68,8 @@ class LeagueService {
    */
   getLeaderboard() {
     const standingsMap = this._calculateStandings();
-    const standingsArray = [...standingsMap.values()]
-    return this._sortStandings(standingsArray)
+    const standingsArray = [...standingsMap.values()];
+    return this._sortStandings(standingsArray);
   }
   _calculateStandings() {
     const standingsMap = new Map();
@@ -85,7 +85,7 @@ class LeagueService {
         this._updateMatchResults(match, standingsMap);
       }
     }
-    return standingsMap
+    return standingsMap;
   }
   _initializeTeamStanding(teamName, standingsMap) {
     const teamStanding = {
@@ -135,7 +135,7 @@ class LeagueService {
       awayTeam.points += 3;
     } else {
       homeTeam.points += 1;
-      awayTeam += 1;
+      awayTeam.points += 1;
     }
   }
 
@@ -152,11 +152,15 @@ class LeagueService {
         const headToHeadDifference = bToAHeadToHead - aToBHeadToHead;
         if (headToHeadDifference !== 0) return headToHeadDifference;
 
-        // Tertiary tiebreakers could be goal difference or alphabetical order
+        // Tertiary tiebreakers: goal difference 
         const goalDifference =
           b.goalsFor - b.goalsAgainst - (a.goalsFor - a.goalsAgainst);
         if (goalDifference !== 0) return goalDifference;
 
+        // next tiebreaker: goals scored
+        if (b.goalsFor !== a.goalsFor) return b.goalsFor - a.goalsFor;
+
+        // last tiebreaker: alphabetic order
         return a.teamName.localeCompare(b.teamName);
       })
       .map((team) => ({
@@ -169,8 +173,8 @@ class LeagueService {
       }));
   }
   _updateMatchResults(match, standingsMap) {
-    const homeTeam = standingsMap.get(match.homeTeam)
-    const awayTeam = standingsMap.get(match.awayTeam)
+    const homeTeam = standingsMap.get(match.homeTeam);
+    const awayTeam = standingsMap.get(match.awayTeam);
     this._updateMatchesPlayed(homeTeam, awayTeam);
     this._updateTeamGoals(homeTeam, awayTeam, match);
     this._updateTeamPoints(homeTeam, awayTeam, match);
@@ -210,7 +214,6 @@ class LeagueService {
       }
       const result = await matchesResponse.json();
 
-      // Set the matches in the service
       this.setMatches(result.matches);
     } catch (error) {
       console.error("Error fetching matches data:", error);
