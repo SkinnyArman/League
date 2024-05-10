@@ -1,13 +1,13 @@
 import { createWebHistory, createRouter } from "vue-router";
 
-import SchedulePage from "./pages/SchedulePage.vue";
-import LeaderboardPage from "./pages/LeaderboardPage.vue";
+import Schedule from "./pages/Schedule.vue";
+import Leaderboard from "./pages/Leaderboard.vue";
 import NotFound from "./pages/NotFound.vue";
 
 const routes = [
-  { path: "/", component: SchedulePage },
-  { path: "/schedule", component: SchedulePage, name: "Schedule" },
-  { path: "/leaderboard", component: LeaderboardPage, name: "Leaderboard" },
+  { path: "/", component: Schedule },
+  { path: "/schedule", component: Schedule, name: "Schedule" },
+  { path: "/leaderboard", component: Leaderboard, name: "Leaderboard" },
   { path: "/:notFound", component: NotFound, name: "404" },
 ];
 
